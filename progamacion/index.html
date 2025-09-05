@@ -2,105 +2,219 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Web de Matemática</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- CAMBIO 1: Título de la página -->
+    <title>Iniciar Sesión - Matemáticas</title>
+    <!-- Enlace a la fuente Montserrat desde Google Fonts para un look similar al de la imagen -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-         body { font-family: Arial, sans-serif; background: #f5f5f5; padding: 40px; }
-        .container { background: #fff; padding: 30px; border-radius: 8px; max-width: 500px; margin: auto; box-shadow: 0 2px 8px #ccc; }
-        .flex { display: flex; gap: 20px; }
-        .col { flex: 1; display: flex; flex-direction: column; justify-content: center; }
-        input, button { margin: 8px 0; padding: 8px; width: 100%; }
-        select {
-            background: none;
+        /* Variables CSS para facilitar la gestión de colores y fuentes */
+        :root {
+            --dark-bg: #100C2A; /* Color de fondo base oscuro */
+            --card-bg: #0d0d0d; /* Color de fondo de la tarjeta de login */
+            --blue-glow: rgba(0, 100, 255, 0.5); /* Color para el brillo azul de la tarjeta */
+            --primary-blue: #007bff; /* Azul principal para el botón */
+            --text-white: white; /* Color de texto principal */
+            --input-bg: white; /* Color de fondo de los campos de entrada */
+            --input-text-color: #333; /* Color del texto dentro de los campos de entrada */
+            --font-family: 'Montserrat', sans-serif; /* Familia de fuente */
+        }
+
+        body {
+            margin: 0;
+            font-family: var(--font-family);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh; /* Altura mínima del cuerpo para centrar verticalmente */
+            background-color: var(--dark-bg);
+            color: var(--text-white);
+            overflow: hidden; /* Oculta cualquier desbordamiento de los elementos de fondo */
+            position: relative; /* Necesario para posicionar los pseudo-elementos de fondo */
+        }
+
+        /* Efectos de fondo: pseudo-elementos para crear las curvas de color en las esquinas */
+        body::before, body::after {
+            content: '';
+            position: absolute;
+            width: 60vmax; /* Tamaño grande para un efecto de barrido */
+            height: 60vmax;
+            border-radius: 50%; /* Para que los degradados formen círculos/elipses */
+            filter: blur(calc(60vmax / 8)); /* Efecto de desenfoque para suavizar los bordes */
+            opacity: 0.3; /* Opacidad para un efecto sutil */
+            z-index: -1; /* Coloca los fondos detrás del contenido principal */
+        }
+
+        body::before {
+            top: -20vmax;
+            left: -20vmax;
+            background: linear-gradient(to bottom right, #FF005C, transparent); /* Degradado rojizo en la esquina superior izquierda */
+        }
+
+        body::after {
+            bottom: -20vmax;
+            right: -20vmax;
+            background: linear-gradient(to top left, #007BFF, transparent); /* Degradado azulado en la esquina inferior derecha */
+        }
+
+        .login-container {
+            display: flex;
+            background-color: var(--card-bg);
+            border-radius: 15px; /* Bordes redondeados de la tarjeta */
+            padding: 40px 50px;
+            box-shadow: 0 0 25px 8px var(--blue-glow); /* Efecto de brillo azul */
+            max-width: 800px;
+            width: 90%; /* Ancho responsivo */
+            gap: 50px; /* Espacio entre el logo y el formulario */
+            align-items: center;
+            flex-wrap: wrap; /* Permite que los elementos se envuelvan en pantallas pequeñas */
+            justify-content: center; /* Centra el contenido cuando se envuelve */
+        }
+
+        .login-logo-section {
+            flex: 1; /* Permite que ocupe espacio flexible */
+            min-width: 200px; /* Ancho mínimo para la sección del logo */
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Estilos para el SVG del logotipo "M" */
+        .lm-logo-svg {
+            width: 150px; /* Tamaño del SVG */
+            height: 150px;
+            margin-bottom: 10px;
+        }
+        .lm-logo-svg path {
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .liga-master-text {
+            font-size: 1.2em;
+            font-weight: 600;
+            margin: 0;
+            letter-spacing: 2px; /* Espaciado entre letras para "MATEMÁTICAS" */
+        }
+
+        .login-form-section {
+            flex: 1.5; /* Otorga más espacio al formulario */
+            min-width: 280px; /* Ancho mínimo para la sección del formulario */
+        }
+
+        .login-form-section h2 {
+            font-size: 2.2em;
+            margin-bottom: 30px;
+            color: var(--text-white);
+            text-align: center;
+            font-weight: 700;
+        }
+
+        .login-form-section form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px; /* Espacio entre los campos del formulario */
+        }
+
+        .login-form-section input[type="text"],
+        .login-form-section input[type="password"] {
+            background-color: var(--input-bg);
             border: none;
-            box-shadow: none;
+            padding: 14px 20px;
+            border-radius: 8px; /* Bordes redondeados de los campos de entrada */
             font-size: 1.1em;
-            color: #2d6cdf;
-            padding-left: 0;
-            padding-right: 0;
-            outline: none;
-            appearance: none;
-            -webkit-appearance: none;
-            -moz-appearance: none;
+            color: var(--input-text-color);
+            width: calc(100% - 40px); /* Ancho completo menos el padding */
+            box-sizing: border-box; /* Incluye padding en el cálculo del ancho */
         }
-        .resultado { margin-top: 16px; font-weight: bold; min-height: 24px; }
-        h2 { color: #2d6cdf; }
-        button { background: #2d6cdf; color: #fff; border: none; border-radius: 4px; cursor: pointer; }
-        button:hover { background: #1a4a96; }
-        @media (max-width: 600px) {
-            .flex { flex-direction: column; }
+
+        .login-form-section input::placeholder {
+            color: #999;
         }
-    
+
+        .login-form-section button {
+            background-color: var(--primary-blue);
+            color: var(--text-white);
+            border: none;
+            padding: 15px 20px;
+            border-radius: 8px; /* Bordes redondeados del botón */
+            font-size: 1.2em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease; /* Transición suave al pasar el ratón */
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .login-form-section button:hover {
+            background-color: #0056b3; /* Color de fondo del botón al pasar el ratón */
+        }
+
+        /* Ajustes responsivos para pantallas más pequeñas */
+        @media (max-width: 768px) {
+            .login-container {
+                flex-direction: column; /* Apila los elementos en pantallas pequeñas */
+                padding: 30px;
+                gap: 30px;
+            }
+
+            .login-logo-section,
+            .login-form-section {
+                min-width: unset; /* Elimina el ancho mínimo para mayor flexibilidad */
+                width: 100%;
+            }
+
+            .login-form-section h2 {
+                margin-top: 0;
+                margin-bottom: 25px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .login-container {
+                padding: 20px;
+            }
+            .login-form-section h2 {
+                font-size: 1.8em;
+                margin-bottom: 20px;
+            }
+            .login-form-section input,
+            .login-form-section button {
+                font-size: 1em;
+                padding: 12px 15px;
+            }
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h2>Calculadora Matemática Mejorada</h2>
-        <div class="flex">
-            
-            <div class="col">
-                <input type="number" id="num1" placeholder="Primer número">
-                <input type="number" id="num2" placeholder="Segundo número">
-                <div class="col">
-                    <label for="operacion"><b>Operación</b></label>
-                    <select id="operacion">
-                        <option value="sumar">Sumar</option>
-                        <option value="restar">Restar</option>
-                        <option value="multiplicar">Multiplicar</option>
-                        <option value="dividir">Dividir</option>
-                        <option value="potencia">Potencia</option>
-                        <option value="raiz">Raíz cuadrada</option>
-                    </select>
-                </div>
-                <button onclick="calcular()">Calcular</button>
-                <div class="resultado" id="resultado"></div>
-            </div>
+    <div class="login-container">
+        <div class="login-logo-section">
+            <!-- SVG para el logotipo "M" dentro de un trofeo -->
+            <svg class="lm-logo-svg" viewBox="0 0 160 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <!-- Contorno principal del trofeo -->
+                <path d="M40 20 L50 0 H110 L120 20 V30 H140 V100 C140 130 120 150 80 150 C40 150 20 130 20 100 V30 H40 V20 Z" stroke="white" stroke-width="8" fill="none"/>
+                <!-- Asas del trotrofeo -->
+                <path d="M20 50 C5 50 0 60 0 70 V90 M140 50 C155 50 160 60 160 70 V90" stroke="white" stroke-width="8" fill="none"/>
+                <!-- Tres formas de 'V' invertidas en la base del trofeo -->
+                <path d="M60 150 L70 170 L80 150 M80 150 L90 170 L100 150 M100 150 L110 170 L120 150" stroke="white" stroke-width="8" fill="none"/>
+                <!-- CAMBIO 2: Texto "M" dentro del trofeo -->
+                <text x="80" y="80" font-family="var(--font-family)" font-size="48" font-weight="700" fill="white" text-anchor="middle" dominant-baseline="middle">M</text>
+            </svg>
+            <!-- CAMBIO 3: Texto debajo del logo -->
+            <p class="liga-master-text">MATEMÁTICAS</p>
+        </div>
+        <div class="login-form-section">
+            <h2>Iniciar Sesión</h2>
+            <form>
+                <input type="text" id="username" name="username" value="iandel99" aria-label="Nombre de usuario">
+                <input type="password" id="password" name="password" value="********" aria-label="Contraseña">
+                <button type="submit">Entrar</button>
+            </form>
         </div>
     </div>
-    <script>
-        // Limpia el resultado al cambiar entradas
-        document.getElementById('num1').addEventListener('input', limpiarResultado);
-        document.getElementById('num2').addEventListener('input', limpiarResultado);
-        document.getElementById('operacion').addEventListener('change', limpiarResultado);
-
-        function limpiarResultado() {
-            document.getElementById('resultado').textContent = '';
-        }
-
-        function calcular() {
-            const num1 = parseFloat(document.getElementById('num1').value);
-            const num2 = parseFloat(document.getElementById('num2').value);
-            const operacion = document.getElementById('operacion').value;
-            let resultado = '';
-
-            if (isNaN(num1)) {
-                resultado = 'Por favor, ingresa el primer número.';
-            } else if (['sumar','restar','multiplicar','dividir','potencia'].includes(operacion) && isNaN(num2)) {
-                resultado = 'Por favor, ingresa el segundo número.';
-            } else {
-                switch (operacion) {
-                    case 'sumar':
-                        resultado = num1 + num2;
-                        break;
-                    case 'restar':
-                        resultado = num1 - num2;
-                        break;
-                    case 'multiplicar':
-                        resultado = num1 * num2;
-                        break;
-                    case 'dividir':
-                        resultado = num2 !== 0 ? (num1 / num2) : 'No se puede dividir por cero';
-                        break;
-                    case 'potencia':
-                        resultado = Math.pow(num1, num2);
-                        break;
-                    case 'raiz':
-                        resultado = num1 >= 0 ? Math.sqrt(num1) : 'No se puede calcular la raíz de un número negativo';
-                        break;
-                }
-            }
-            document.getElementById('resultado').textContent = 'Resultado: ' + resultado;
-        }
-    </script>
 </body>
-
 </html>
